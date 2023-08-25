@@ -31,12 +31,11 @@ public class Interfaz extends javax.swing.JFrame {
                     "char", "string", "byte", "boolean",
                     "and", "not", "or"));
 
-    
     // Declaración de contadores.
     int contParentesis = 0, contComillas = 0, contTerminar = 0, bandera = 0, blancos = 0, contCom, banCor = 0;
 
     // Declaración de contadores para los tokens.
-    int tokenAritmetico = 0, tokenAsignacion = 0, tokenRelacional = 0, tokenNumEnt = 0, tokenNumDec = 0,tokenOpLog = 0,
+    int tokenAritmetico = 0, tokenAsignacion = 0, tokenRelacional = 0, tokenNumEnt = 0, tokenNumDec = 0, tokenOpLog = 0,
             tokenIdentificador = 0, tokenPuntuacion = 0,
             tokenPuntuacionFin = 0, tokenLiteral = 0, tokenComentarioM = 0, tokenComentario = 0, tokenUno = 0, tokenCorchetes = 0,
             tokenDos = 0, tokenTres = 0, tokenCuatro = 0,
@@ -78,7 +77,7 @@ public class Interfaz extends javax.swing.JFrame {
         } else if (resvEstructDeControl.contains(pila)) { // si no en estructura de control
             bandera = 0;
             return "Estructura de control";
-        }else if (operadoresLogicos.contains(pila)) { // si no en estructura de control
+        } else if (operadoresLogicos.contains(pila)) { // si no en estructura de control
             bandera = 0;
             return "Operador lógico";
         }
@@ -106,7 +105,6 @@ public class Interfaz extends javax.swing.JFrame {
             contCom = 0;
             parentesisAnalizados = false; // y la bandera para el analisis se deja apagada.
 
-            // verificarPuntoYComa(x); //metodo para ver si la linea termina con ;
             for (int y = 0; y < linea[x].length(); y++) { // Recorre la linea actual caracter por caracter
                 //Caracter 2 recibe la cadena original
                 caracter2 = String.valueOf(linea[x].charAt(y)); // Cala símbolo se convierte en caracter
@@ -211,7 +209,7 @@ public class Interfaz extends javax.swing.JFrame {
                             /*if (String.valueOf(pila.charAt(1)).equals(".")) {
                                 
                             } else {
-                                errores += "Error 513: El segundo caracter de un decimal debe ser ' . ' en la linea: "
+                                errores += "Error 513: El segundo caracter de un decimal debe ser ' . ' en la linea "
                                         + (x + 1) + "\n";
                                  tokenNumDec++;
                                   analisis += pila2 + " → Numero " + tipoNumero + " (13," + tokenNumDec + ")\n";
@@ -224,42 +222,6 @@ public class Interfaz extends javax.swing.JFrame {
                         orden2[apuntador] = "Numero";
                         orden[apuntador] = "Numero";
                         apuntador++;
-
-                        /*
-                         * if (String.valueOf(linea[x].charAt(y + 1)).equals(".")) {
-                         * if (linea[x].length() > y + 1) {
-                         * for (int z = y + 2; z < linea[x].length(); z++) { // Recorrer la cadena para
-                         * leer todo el numero
-                         * caracter = String.valueOf(linea[x].charAt(z));
-                         * if (!numerosEnteros.contains(caracter)) {
-                         * //Salir porque se encontró un caracter que no es un numero ni un .
-                         * break;
-                         * }
-                         * }
-                         * }
-                         * pila += caracter;
-                         * y++;
-                         * // if (String.valueOf(linea[x].charAt(y + 1)).equals("."))
-                         * //if (String.valueOf(linea[x].charAt(y)).equals("."))
-                         * 
-                         * }
-                         */
-
- /*
-                         * for (int z = y + 1; z < linea[x].length(); z++) { // Recorrer la cadena para
-                         * leer todo el numero
-                         * caracter = String.valueOf(linea[x].charAt(z));
-                         * if (!numerosEnteros.contains(caracter)) {
-                         * if (caracter.equals(".") ) {
-                         * tipoNumero = "Decimal";
-                         * } else { //Salir porque se encontró un caracter que no es un numero ni un .
-                         * break;
-                         * }
-                         * }
-                         * pila += caracter;
-                         * y++;
-                         * }
-                         */
                         tipoNumero = "Entero";
                     }
 
@@ -321,6 +283,7 @@ public class Interfaz extends javax.swing.JFrame {
                         }*/
                         identificador(x);
                         pila = "";
+                        pila2 = "";
                         orden2[apuntador] = "Identificador";
                         orden[apuntador] = "Identificador";
                         apuntador++;
@@ -346,7 +309,7 @@ public class Interfaz extends javax.swing.JFrame {
                 }
 
             }
-            
+
             if (blancos == linea[x].length()) {
                 System.out.println("Es linea vacia");
             } else if (linea[x].endsWith("*/") && (orden[0] == null || orden[0] == "")) {
@@ -354,13 +317,13 @@ public class Interfaz extends javax.swing.JFrame {
             } else {
                 System.out.println("Analizando estructura linea " + (x + 1));
                 analisis += "\n";
-                repeticion(x);
-                //estructura(x);
+                //repeticion(x);
+                estructura(x);
                 xx = x;
                 //verificarPuntoYComa(x); // metodo para ver si la linea termina con ;
                 verificarGuionBajoFinal(x);
             }
-
+            verificarPuntoYComa(x); //metodo para ver si la linea termina con ;
             blancos = 0;
         }
 
@@ -390,13 +353,13 @@ public class Interfaz extends javax.swing.JFrame {
                 } else {
                     System.out.println("Se esta comparando: " + pila.substring(h, b) + " y " + pila.substring(h + 1, b + 1));
                     if (pila.substring(h, b).equals("") && pila.substring(h + 1, b + 1).equals("")) {
-                        errores += "Error 545: Hay mas de un ' _ ' seguido en la linea: " + (x + 1) + "\n";
+                        errores += "Error 545: Hay mas de un ' _ ' seguido en la linea " + (x + 1) + "\n";
                     }
                 }
                 if (b == j) {
                     if (pila.substring(h, b).equals("_")) {
                         System.out.println("Error");
-                        errores += "Error 546: El identificador termina en ' _ ' en la linea: " + (x + 1) + "\n";
+                        errores += "Error 546: El identificador termina en ' _ ' en la linea " + (x + 1) + "\n";
                     }
                 }
 
@@ -404,7 +367,7 @@ public class Interfaz extends javax.swing.JFrame {
                 h++;
             }
         } else {
-            errores += "Error 548: El identificador no comienza con letra en la linea: " + (x + 1) + "\n";
+            errores += "Error 548: El identificador no comienza con letra en la linea " + (x + 1) + "\n";
         }
     }
 
@@ -420,7 +383,7 @@ public class Interfaz extends javax.swing.JFrame {
      * pos = linea[x].indexOf(".", pos + 1);
      * }
      * if (contador > 1) {
-     * errores += "Error 512: Hay mas de un punto en la linea: " + (x + 1) + "\n";
+     * errores += "Error 512: Hay mas de un punto en la linea " + (x + 1) + "\n";
      * }
      * }
      */
@@ -439,16 +402,16 @@ public class Interfaz extends javax.swing.JFrame {
                 // Verificar si hay comentarios hasta el final de la linea
                 if (!linea[y].contains("//") && (!linea[y].contains("/") && !linea[y].contains("/"))) {
                     // Marca el error de que no termina en ;
-                    errores += "Error 500: No termina en ' ; ' en la linea: " + (y + 1) + "\n";
+                    errores += "Error 500: Se esperaba ' ; ' en la linea " + (y + 1) + "\n";
                     return;
                 }
             }
         }
         if (contTerminar == 0) { // si no conto ningun punto y coma
-            errores += "Error 501: Falta ' ; ' en la linea: " + (y + 1) + "\n"; // marca el error de que falta terminar
+            errores += "Error 501: Se esperaba ' ; ' en la linea " + (y + 1) + "\n"; // marca el error de que falta terminar
             // con ;
         } else if (contTerminar > 1) { // si hay mas de un ;
-            errores += "Error 502: Hay más de un ' ; ' en la linea: " + (y + 1) + "\n"; // Se marca ese error
+            errores += "Error 502: Hay más de un ' ; ' en la linea " + (y + 1) + "\n"; // Se marca ese error
         }
 
     }
@@ -492,7 +455,7 @@ public class Interfaz extends javax.swing.JFrame {
                     apuntador++;
                 }
             } else {
-                errores += "Error 510:Faltan comillas en la linea: " + x + 1 + "\n";// "Faltan comillas por cerrar en la
+                errores += "Error 510:Faltan comillas en la linea " + x + 1 + "\n";// "Faltan comillas por cerrar en la
             }
 
         } else {
@@ -523,7 +486,7 @@ public class Interfaz extends javax.swing.JFrame {
                     if (!p.isEmpty()) {
                         p.pop();
                     } else {
-                        errores += "Error 511: Faltan parentesis por cerrar en la linea: " + (x + 1) + "\n";
+                        errores += "Error 511: Faltan parentesis por cerrar en la linea " + (x + 1) + "\n";
                         return;
                     }
                 }
@@ -533,7 +496,7 @@ public class Interfaz extends javax.swing.JFrame {
             if (p.isEmpty()) {// Si la pila esta vacia
                 // errores += "Correcto";
             } else {
-                errores += "Error 511: Faltan parentesis por cerrar en la linea: " + (x + 1);
+                errores += "Error 511: Faltan parentesis por cerrar en la linea " + (x + 1);
             }
         } else {
             // System.out.println(errores + " caracter diferente " + x + "\n");
@@ -642,52 +605,14 @@ public class Interfaz extends javax.swing.JFrame {
 
     public void estructura(int x) // Verificar que la estructura este adecuadamente
     {
-        System.out.println(orden[0]);
+        /* Estructura 1:
+        Tipo de dato + identificador = (valor | literal | identificador) operador (valor | literal | identificador)*/
         if (orden[0].equals("Tipo de dato")) {
-            System.out.println("Si entre");
-            if (orden[1] == "Identificador") {
-                if (orden[2] == "Operador de Asignación") {
-                    if (orden[3] == "Numero" || orden[3] == "Literal") {
-                        if (orden[4] == "Signo de puntuación") {
-                            apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
-                        } else {
-                            errores += "Error 544: Esta mal estructurado en la linea: " + (x + 1) + "\n"; // se manda el
-                            // mensaje de
-                            // error
-                            apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
-                            repeticion(x); // se invoca al método para verificar que no exita repetición de alguna
-                            // palabra o signo.
-                        }
-
-                    } else {
-                        errores += "Error 543: Esta mal estructurado, No hay un valor para el identificador en la linea: "
-                                + (x + 1) + " \n"; // se manda el mensaje de error
-                        apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
-                        repeticion(x); // se invoca al método para verificar que no exita repetición de alguna palabra
-                        // o signo.
-                    }
-                } else {
-                    errores += "Error 542: Esta mal estructurado, No hay un operador de asignación en la linea: "
-                            + (x + 1) + "\n"; // se manda el mensaje de error
-                    apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
-                    repeticion(x); // se invoca al método para verificar que no exita repetición de alguna palabra
-                    // o signo.
-                }
-            } else {
-                errores += "Error 541: Esta mal estructurado, Falta un identificador en la linea: " + (x + 1) + "\n"; // se
-                // error
-                apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
-                repeticion(x); // se invoca al método para verificar que no exita repetición de alguna palabra
-                // o signo.
-            }
-
-        } else { // si no
-            errores += "Error 540: Esta mal estructurado, No comienza con un tipo de dato en la linea: " + (x + 1)
-                    + "\n"; // se manda el mensaje de error
-            apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
-            repeticion(x); // se invoca al método para verificar que no exita repetición de alguna palabra
-            // o signo.
+            verificarEstructura1(x);
         }
+
+        System.out.println(orden[0]);
+
 
         /*
          * if()
@@ -703,7 +628,7 @@ public class Interfaz extends javax.swing.JFrame {
          * apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
          * 
          * } else { //si no
-         * errores += "Error 540: Esta mal estructurado en la linea: " + (x + 1) + "\n";
+         * errores += "Error 540: Esta mal estructurado en la linea " + (x + 1) + "\n";
          * //se manda el mensaje de error
          * apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
          * repeticion(x); //se invoca al método para verificar que no exita repetición
@@ -715,6 +640,134 @@ public class Interfaz extends javax.swing.JFrame {
         limpiarPila(orden);
         limpiarPila(orden2);
 
+    }
+
+    public void verificarEstructura1(int linea) {
+        System.out.println("Verificando estructura 1");
+        if (orden[0].equals("Tipo de dato")) {
+            System.out.println(orden[0]);
+            if (orden[1] == "Identificador") {
+                System.out.println(orden[1]);
+                if (orden[2] == "Operador de Asignación") {
+                    System.out.println(orden[2]);
+                    int x = 3;
+                                                        
+                            while (orden[x] != "") {
+                                //Verificar operando a continuacion
+                                System.out.println(orden[x]);
+                                if (orden[x] != "Numero" && orden[x] != "Literal" && orden[x] != "Identificador") {
+                                    //Damos error de estructura
+                                    errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
+                                    break;
+                                }
+                                if (!"".equals(orden[x + 1]) && orden[x + 1] != null) {
+                                    x++;
+                                    System.out.println(orden[x]);
+                                } else {
+                                    break;
+                                }
+                                //Despues de un operando debe haber un operador o un punto y coma
+                                if (orden[x] != "Operador Aritmético" && orden[x] != "Signo de puntuación") {
+                                    //Damos error de estructura
+                                    errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operador.\n"; // se manda el
+                                    break;
+                                }
+                                if (orden[x] == "Signo de puntuación") {
+                                    break;
+                                }
+                                System.out.println("Siguiente: " + orden[x + 1]);
+                                if ("".equals(orden[x + 1]) && orden[x + 1] != null) {
+                                    errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
+                                    break;
+                                }
+                                x++;
+                            }
+
+                            System.out.println("Fin de la verificacion");
+                            
+                            apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+                            repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna
+                            // palabra o signo.
+                            
+                            
+                    /*if (orden[3] == "Numero" || orden[3] == "Literal" || orden[3] == "Identificador") {
+                        System.out.println(orden[3]);
+                        //Llegados a este punto solo puede haber un punto y coma o una operacion
+                        if (orden[4] == "Signo de puntuación") {
+                            System.out.println(orden[4]);
+                            apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+                            //Termina la linea
+
+                        } else if (orden[4] == "Operador Aritmético") {
+                            System.out.println(orden[4]);
+                            //Encontrado un operador hay que seguir recorriendo los lexemas hasta encontrar el
+                            //el final de la operacion 
+                            
+                        }
+
+                    } else {
+                        errores += "Error 543: Esta mal estructurado, No hay un valor para el identificador en la linea "
+                                + (linea + 1) + " \n"; // se manda el mensaje de error
+                        apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+                        repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra
+                        // o signo.
+                    }*/
+                } else {
+                    errores += "Error 542: Esta mal estructurado, No hay un operador de asignación en la linea "
+                            + (linea + 1) + "\n"; // se manda el mensaje de error
+                    apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+                    repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra
+                    // o signo.
+                }
+            } else {
+                errores += "Error 541: Esta mal estructurado, Falta un identificador en la linea " + (linea + 1) + "\n"; // se
+                // error
+                apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+                repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra
+                // o signo.
+            }
+
+        } else { // si no
+            errores += "Error 540: Esta mal estructurado, No comienza con un tipo de dato en la linea " + (linea + 1)
+                    + "\n"; // se manda el mensaje de error
+            apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+            repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra
+            // o signo.
+        }
+
+    }
+
+    public boolean comprobarOperacion(int linea, int x) {
+        //Verificar operando a continuacion
+        System.out.println(orden[x]);
+        if (orden[x] != "Numero" && orden[x] != "Literal" && orden[x] != "Identificador") {
+            //Damos error de estructura
+            errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
+            return false;
+        }
+        if (x < orden.length) {
+            x++;
+        } else {
+            return false;
+        }
+        //Despues de un operando debe haber un operador o un punto y coma
+        if (orden[x] != "Operador Aritmético" && orden[x] != "Signo de puntuación") {
+            //Damos error de estructura
+            errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operador.\n"; // se manda el
+            return false;
+        }
+        return true;
+    }
+
+    public boolean comprobarOperando(int linea, int x) {
+
+        x++;
+        return comprobarOperador(linea, x);
+    }
+
+    public boolean comprobarOperador(int linea, int x) {
+
+        return true;
     }
 
     public void limpiarPila(String vector[]) {// metodo para dejar los vectores vacios, lleva como parametro el vector.
@@ -744,7 +797,7 @@ public class Interfaz extends javax.swing.JFrame {
                     r--; // Se decrementa r porque se pueden tener dos + seguidos.
                     if (orden2[a + 2] != null && orden2[a + 2].equals("+")) { // Y en la posicion siguiente hay otro +
                         // Es error porque serian mas de tres + juntos
-                        errores += "Error 545: Hay más de dos: " + "'" + orden2[a + 1] + "'" + " en la linea: "
+                        errores += "Error 545: Hay más de dos: " + "'" + orden2[a + 1] + "'" + " en la linea "
                                 + (x + 1) + "\n";
                     }
                 }
@@ -753,7 +806,7 @@ public class Interfaz extends javax.swing.JFrame {
                     if (orden2[a + 2] != null && orden2[a + 2].equals("=")) {/// Y si en la siguiente posición hay otro
                         /// =
                         // Es error porque serian mas de tres = juntos
-                        errores += "Error 545: Hay más de dos: " + "'" + orden2[a + 1] + "'" + " en la linea: " + (x
+                        errores += "Error 545: Hay más de dos: " + "'" + orden2[a + 1] + "'" + " en la linea " + (x
                                 + 1) + "\n";
                     }
                 }
@@ -762,7 +815,7 @@ public class Interfaz extends javax.swing.JFrame {
                     r--; // Se decrementa r porque es posible tener dos -- seguidos
                     if (orden2[a + 2] != null && orden2[a + 2].equals("-")) {// Y si en la siguiente posición hay otro -
                         // Es error porque serian mas de tres - juntos
-                        errores += "Error 545: Hay más de dos: " + "'" + orden2[a + 1] + "'" + " en la linea: " + (x
+                        errores += "Error 545: Hay más de dos: " + "'" + orden2[a + 1] + "'" + " en la linea " + (x
                                 + 1) + "\n";
                     }
                 }
@@ -770,7 +823,7 @@ public class Interfaz extends javax.swing.JFrame {
                     r--; // Se decrementa r porque es posible tener dos // seguidos
                     if (orden2[a + 2] != null && orden2[a + 2].equals("/")) { // Y si en la iguiente posición hay otro /
                         // Es error porque serian mas de tres / juntos
-                        errores += "Error 545: Hay más de dos: " + "'" + orden2[a + 1] + "'" + " en la linea: " + (x
+                        errores += "Error 545: Hay más de dos: " + "'" + orden2[a + 1] + "'" + " en la linea " + (x
                                 + 1) + "\n";
                     }
                 }
@@ -780,7 +833,7 @@ public class Interfaz extends javax.swing.JFrame {
         if (r != 0) { // si hay al más de una repetición no valida
             for (int m = 0; m <= r - 1; m++) { // se recorre un ciclo con la cantidad de repeticiones y se muestra el
                 // error correspondiente
-                errores += "Error 545: Hay mas de un: " + "'" + repeticion[m] + "'" + " en la linea: " + (x + 1) + "\n";
+                errores += "Error 545: Hay mas de un: " + "'" + repeticion[m] + "'" + " en la linea " + (x + 1) + "\n";
             }
         }
     }
@@ -873,7 +926,7 @@ public class Interfaz extends javax.swing.JFrame {
                     banCor = 1;
                 }
             } else {
-                errores += "Error 513: Faltan corchetes en la linea: " + x + 1 + "\n";// "Faltan comillas por cerrar en la
+                errores += "Error 513: Faltan corchetes en la linea " + x + 1 + "\n";// "Faltan comillas por cerrar en la
             }
 
         } else {
@@ -888,6 +941,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
         return y;
     }
+
     public void verificarGuionBajoFinal(int y) {
         String lineaActual = linea[y].trim();
         if (lineaActual.endsWith("_")) {
@@ -918,6 +972,7 @@ public class Interfaz extends javax.swing.JFrame {
         tokenComentario = 0;
         tokenComentarioM = 0;
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
