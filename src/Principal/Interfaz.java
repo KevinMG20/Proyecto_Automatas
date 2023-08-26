@@ -457,7 +457,7 @@ public class Interfaz extends javax.swing.JFrame {
                 errores += "Error 501: Se esperaba ' ; ' en la linea " + (y + 1) + "\n"; // marca el error de que falta terminar
             } else if (!(linea[y].endsWith("*/")) && !(linea[y].endsWith(" "))) {
                 errores += "Error 501: Se esperaba ' ; ' en la linea " + (y + 1) + "\n"; // marca el error de que falta terminar
-            }            
+            }
         } else if (contTerminar > 1) { // si hay mas de un ;
             errores += "Error 502: Hay más de un ' ; ' en la linea " + (y + 1) + "\n"; // Se marca ese error
         }
@@ -655,12 +655,14 @@ public class Interfaz extends javax.swing.JFrame {
     {
         /* Estructura 1:
         Tipo de dato + identificador = (valor | literal | identificador) operador (valor | literal | identificador)*/
+ /* Estructura 2:
+        Identificador = (valor | literal | identificador) operador (valor | literal | identificador)*/
+
         if (orden[0].equals("Tipo de dato")) {
             verificarEstructura1(x);
+        } else if (orden[0].equals("Identificador")) {
+            verificarEstructura2(x);
         }
-
-        System.out.println(orden[0]);
-
 
         /*
          * if()
@@ -734,8 +736,7 @@ public class Interfaz extends javax.swing.JFrame {
                     System.out.println("Fin de la verificacion");
 
                     apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
-                    repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna
-                    // palabra o signo.
+                    repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra o signo.
 
                     /*if (orden[3] == "Numero" || orden[3] == "Literal" || orden[3] == "Identificador") {
                         System.out.println(orden[3]);
@@ -781,7 +782,66 @@ public class Interfaz extends javax.swing.JFrame {
             repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra
             // o signo.
         }
+    }
 
+    public void verificarEstructura2(int linea) {
+        System.out.println("Verificando estructura 2");
+        if (orden[0] == "Identificador") {
+            System.out.println(orden[0]);
+            if (orden[1] == "Operador de Asignación") {
+                System.out.println(orden[1]);
+                int x = 2;
+
+                while (orden[x] != "") {
+                    //Verificar operando a continuacion
+                    System.out.println(orden[x]);
+                    if (orden[x] != "Numero" && orden[x] != "Literal" && orden[x] != "Identificador") {
+                        //Damos error de estructura
+                        errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
+                        break;
+                    }
+                    if (!"".equals(orden[x + 1]) && orden[x + 1] != null) {
+                        x++;
+                        System.out.println(orden[x]);
+                    } else {
+                        break;
+                    }
+                    //Despues de un operando debe haber un operador o un punto y coma
+                    if (orden[x] != "Operador Aritmético" && orden[x] != "Signo de puntuación") {
+                        //Damos error de estructura
+                        errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operador.\n"; // se manda el
+                        break;
+                    }
+                    if (orden[x] == "Signo de puntuación") {
+                        break;
+                    }
+                    System.out.println("Siguiente: " + orden[x + 1]);
+                    if ("".equals(orden[x + 1]) && orden[x + 1] != null) {
+                        errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
+                        break;
+                    }
+                    x++;
+                }
+
+                System.out.println("Fin de la verificacion");
+
+                apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+                repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra o signo.
+
+            } else {
+                errores += "Error 542: Esta mal estructurado, No hay un operador de asignación en la linea "
+                        + (linea + 1) + "\n"; // se manda el mensaje de error
+                apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+                repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra
+                // o signo.
+            }
+        } else {
+            errores += "Error 541: Esta mal estructurado, Falta un identificador en la linea " + (linea + 1) + "\n"; // se
+            // error
+            apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+            repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna palabra
+            // o signo.
+        }
     }
 
     public boolean comprobarOperacion(int linea, int x) {
