@@ -121,19 +121,54 @@ public class Interfaz extends javax.swing.JFrame {
                 System.out.println(caracter2);
 
                 if (operadoresAritmeticos.contains(caracter)) { // si el caracter es un operador aritmetico                   
-                    if (caracter.equals("/") || caracter.equals("*")) { // Si el siguiente caracter es / o *, es decir es un comentario
-                        if (linea[x].contains("//") || linea[x].contains("/") || linea[x].contains("/")) {
-                            int finDeComentarios[] = verificarComentarios(x, y);
+                    if (caracter.equals("/") || caracter.equals("*")) {
+                        if (caracter.equals("/")) { //Verificar si es comentario
+                            System.out.println("/ Detectado");
+                            if (y + 1 < linea[x].length() && (linea[x].charAt(y + 1) == '/' || linea[x].charAt(y + 1) == '*')) { // Si el siguiente caracter es / o *, es decir es un comentario
+                                int finDeComentarios[] = verificarComentarios(x, y);
 
-                            if (finDeComentarios[0] > x || finDeComentarios[1] == linea[x].length()) {
+                                if (finDeComentarios[0] > x || finDeComentarios[1] == linea[x].length()) {
+                                    x = finDeComentarios[0];
+                                    System.out.println("Break 1");
+                                    break;
+                                }
+
                                 x = finDeComentarios[0];
-                                System.out.println("Break 1");
-                                break;
-                            }
+                                y = finDeComentarios[1];
+                                System.out.println("No break");
+                            } else { //Si el siguiente caracter despues de una / o un * no e
+                                System.out.println("Aritmetico");
+                                tokenAritmetico++;
+                                analisis += caracter2 + " → Operador Aritmético (11," + tokenAritmetico + ")\n";
 
-                            x = finDeComentarios[0];
-                            y = finDeComentarios[1];
-                            System.out.println("No break");
+                                orden2[apuntador] = caracter;
+                                orden[apuntador] = "Operador Aritmético";
+                                apuntador++;
+                            }
+                        } else { //Verificar si es cierre de comentarios en */
+                            System.out.println("* Detectado");
+                            if (y + 1 < linea[x].length() && (linea[x].charAt(y + 1) == '/')) {
+                                System.out.println("ppppp");// Si el siguiente caracter es / o *, es decir es un comentario
+                                int finDeComentarios[] = verificarComentarios(x, y);
+
+                                if (finDeComentarios[0] > x || finDeComentarios[1] == linea[x].length()) {
+                                    x = finDeComentarios[0];
+                                    System.out.println("Break 1");
+                                    break;
+                                }
+
+                                x = finDeComentarios[0];
+                                y = finDeComentarios[1];
+                                System.out.println("No break");
+                            } else { //Si el siguiente caracter despues de una / o un * no e
+                                System.out.println("Aritmetico");
+                                tokenAritmetico++;
+                                analisis += caracter2 + " → Operador Aritmético (11," + tokenAritmetico + ")\n";
+
+                                orden2[apuntador] = caracter;
+                                orden[apuntador] = "Operador Aritmético";
+                                apuntador++;
+                            }
                         }
                     } else {// Si no es un comentario se trata de un operador aritmetico.
                         System.out.println("Aritmetico");
@@ -390,6 +425,15 @@ public class Interfaz extends javax.swing.JFrame {
     public void verificarPuntoYComa(int y) { // lleva como parametro la linea que se esta analizando
         contTerminar = 0; // Se inicializa en 0 el contador de ;
 
+        /*if (linea[y].contains(";")) { //La linea contiene ;
+            if (!linea[y].endsWith(";")) { //La linea no termina en ;
+                if (linea[y].contains("//") || linea[y].contains("/*")) { //La linea tiene comentarios
+                    if (linea[y].indexOf("//") > linea[y].indexOf(";")) { //Los comentarios se encuentran despues del ;
+                        
+                    }
+                }
+            }
+        }*/
         for (int x = linea[y].length() - 1; x > -1; x--) {// se recorre la cadena de manera inversa
             // Segun el caracter que se esta leyendo se le asigna a la variable caracter
             caracter = String.valueOf(linea[y].charAt(x));
@@ -407,9 +451,13 @@ public class Interfaz extends javax.swing.JFrame {
                 }
             }
         }
+
         if (contTerminar == 0) { // si no conto ningun punto y coma
-            errores += "Error 501: Se esperaba ' ; ' en la linea " + (y + 1) + "\n"; // marca el error de que falta terminar
-            // con ;
+            if (!(linea[y].contains("*/"))) {
+                errores += "Error 501: Se esperaba ' ; ' en la linea " + (y + 1) + "\n"; // marca el error de que falta terminar
+            } else if (!(linea[y].endsWith("*/")) && !(linea[y].endsWith(" "))) {
+                errores += "Error 501: Se esperaba ' ; ' en la linea " + (y + 1) + "\n"; // marca el error de que falta terminar
+            }            
         } else if (contTerminar > 1) { // si hay mas de un ;
             errores += "Error 502: Hay más de un ' ; ' en la linea " + (y + 1) + "\n"; // Se marca ese error
         }
@@ -590,13 +638,13 @@ public class Interfaz extends javax.swing.JFrame {
                 return finDeComentarios;
             }
         }//Excepcion: se utiliza el cierre de comentarios sin haberlos abierto
-        else if (linea[x].contains("/") && !linea[x].contains("/")) {
-            errores += "Error 531: Declaración de comentarios con '*/' en la linea " + (x + 1) + "\n";
-            tokenComentarioM++;// Se incrementa el contador de tokens de error multiliena
-            // Se concatena al analisis que es un comentario.
-            analisis += linea[x].substring(linea[x].indexOf("*/"), linea[x].length())
-                    + " → Comentarios (17, " + tokenComentarioM + ")\n";
-            finDeComentarios[1] = linea[x].length();
+        else if ((linea[x].contains("/*") && !linea[x].contains("*/")) || (!linea[x].contains("/*") && linea[x].contains("*/"))) {
+            errores += "Error 531: No se encontró apertura de comentarios para ' */ ' en la linea " + (x + 1) + "\n";
+//            tokenComentarioM++;// Se incrementa el contador de tokens de error multiliena
+//            // Se concatena al analisis que es un comentario.
+//            analisis += linea[x].substring(linea[x].indexOf("*/"), linea[x].length())
+//                    + " → Comentarios (17, " + tokenComentarioM + ")\n";
+            finDeComentarios[1] = linea[x].indexOf("*/") + 2;
             return finDeComentarios;
             //finDeComentarios[1] = linea[x].indexOf("*/") + 2;// Asigna el aracter donde terminan los comentarios multilinea
         }
@@ -651,45 +699,44 @@ public class Interfaz extends javax.swing.JFrame {
                 if (orden[2] == "Operador de Asignación") {
                     System.out.println(orden[2]);
                     int x = 3;
-                                                        
-                            while (orden[x] != "") {
-                                //Verificar operando a continuacion
-                                System.out.println(orden[x]);
-                                if (orden[x] != "Numero" && orden[x] != "Literal" && orden[x] != "Identificador") {
-                                    //Damos error de estructura
-                                    errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
-                                    break;
-                                }
-                                if (!"".equals(orden[x + 1]) && orden[x + 1] != null) {
-                                    x++;
-                                    System.out.println(orden[x]);
-                                } else {
-                                    break;
-                                }
-                                //Despues de un operando debe haber un operador o un punto y coma
-                                if (orden[x] != "Operador Aritmético" && orden[x] != "Signo de puntuación") {
-                                    //Damos error de estructura
-                                    errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operador.\n"; // se manda el
-                                    break;
-                                }
-                                if (orden[x] == "Signo de puntuación") {
-                                    break;
-                                }
-                                System.out.println("Siguiente: " + orden[x + 1]);
-                                if ("".equals(orden[x + 1]) && orden[x + 1] != null) {
-                                    errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
-                                    break;
-                                }
-                                x++;
-                            }
 
-                            System.out.println("Fin de la verificacion");
-                            
-                            apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
-                            repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna
-                            // palabra o signo.
-                            
-                            
+                    while (orden[x] != "") {
+                        //Verificar operando a continuacion
+                        System.out.println(orden[x]);
+                        if (orden[x] != "Numero" && orden[x] != "Literal" && orden[x] != "Identificador") {
+                            //Damos error de estructura
+                            errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
+                            break;
+                        }
+                        if (!"".equals(orden[x + 1]) && orden[x + 1] != null) {
+                            x++;
+                            System.out.println(orden[x]);
+                        } else {
+                            break;
+                        }
+                        //Despues de un operando debe haber un operador o un punto y coma
+                        if (orden[x] != "Operador Aritmético" && orden[x] != "Signo de puntuación") {
+                            //Damos error de estructura
+                            errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operador.\n"; // se manda el
+                            break;
+                        }
+                        if (orden[x] == "Signo de puntuación") {
+                            break;
+                        }
+                        System.out.println("Siguiente: " + orden[x + 1]);
+                        if ("".equals(orden[x + 1]) && orden[x + 1] != null) {
+                            errores += "Error 544: Estructura incorrecta en la linea " + (linea + 1) + ". Se esperaba un operando.\n"; // se manda el
+                            break;
+                        }
+                        x++;
+                    }
+
+                    System.out.println("Fin de la verificacion");
+
+                    apuntador = 0;// se regresa el apuntador para sobreescribir en la pila
+                    repeticion(linea); // se invoca al método para verificar que no exita repetición de alguna
+                    // palabra o signo.
+
                     /*if (orden[3] == "Numero" || orden[3] == "Literal" || orden[3] == "Identificador") {
                         System.out.println(orden[3]);
                         //Llegados a este punto solo puede haber un punto y coma o una operacion
